@@ -1,4 +1,5 @@
 #include <ctime>
+#include <deque>
 #include <raylib.h>
 
 Color green{173, 204, 96, 255};
@@ -6,6 +7,22 @@ Color darkGreen{43, 51, 24, 255};
 
 int cellSize = 30;
 int cellCount = 25;
+
+class Snake
+{
+public:
+
+    std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
+
+    void Draw() const
+    {
+        for (const auto [x, y]: body)
+        {
+            const auto segment = Rectangle{x * cellSize, y * cellSize, cellSize, cellSize};
+            DrawRectangleRounded(segment, 0.5, 6, darkGreen);
+        }
+    }
+};
 
 class Food
 {
@@ -49,6 +66,7 @@ int main()
     SetRandomSeed(time(nullptr));
 
     Food food;
+    Snake snake;
 
     while (!WindowShouldClose())
     {
@@ -56,6 +74,7 @@ int main()
         ClearBackground(green);
 
         food.Draw();
+        snake.Draw();
 
         EndDrawing();
     }
