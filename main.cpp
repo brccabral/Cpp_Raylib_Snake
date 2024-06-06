@@ -81,22 +81,26 @@ private:
     Texture2D texture{};
 };
 
-int main()
+class Game
 {
-    InitWindow(750, 750, "Snake");
-    SetTargetFPS(60);
-    SetRandomSeed(time(nullptr));
+public:
 
-    Food food;
-    Snake snake;
+    Snake snake{};
+    Food food{};
 
-    while (!WindowShouldClose())
+    void Draw() const
     {
-        if (EventTriggered(0.2))
-        {
-            snake.Update();
-        }
+        snake.Draw();
+        food.Draw();
+    }
 
+    void Update()
+    {
+        snake.Update();
+    }
+
+    void HandleInput()
+    {
         if (IsKeyPressed(KEY_UP) && snake.direction.y != 1)
         {
             snake.direction = {0, -1};
@@ -113,12 +117,30 @@ int main()
         {
             snake.direction = {1, 0};
         }
+    }
+};
+
+int main()
+{
+    InitWindow(750, 750, "Snake");
+    SetTargetFPS(60);
+    SetRandomSeed(time(nullptr));
+
+    Game game{};
+
+    while (!WindowShouldClose())
+    {
+        if (EventTriggered(0.2))
+        {
+            game.Update();
+        }
+
+        game.HandleInput();
 
         BeginDrawing();
         ClearBackground(green);
 
-        food.Draw();
-        snake.Draw();
+        game.Draw();
 
         EndDrawing();
     }
