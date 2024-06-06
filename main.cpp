@@ -27,13 +27,14 @@ class Snake
 public:
 
     std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
-    Vector2 direction = {1,0};
+    Vector2 direction = {1, 0};
 
     void Draw() const
     {
         for (const auto [x, y]: body)
         {
-            const auto segment = Rectangle{x * cellSize, y * cellSize, cellSize, cellSize};
+            const auto cs = static_cast<float>(cellSize);
+            const auto segment = Rectangle{x * cs, y * cs, cs, cs};
             DrawRectangleRounded(segment, 0.5, 6, darkGreen);
         }
     }
@@ -91,9 +92,26 @@ int main()
 
     while (!WindowShouldClose())
     {
-        if(EventTriggered(0.2))
+        if (EventTriggered(0.2))
         {
             snake.Update();
+        }
+
+        if (IsKeyPressed(KEY_UP) && snake.direction.y != 1)
+        {
+            snake.direction = {0, -1};
+        }
+        if (IsKeyPressed(KEY_DOWN) && snake.direction.y != -1)
+        {
+            snake.direction = {0, 1};
+        }
+        if (IsKeyPressed(KEY_LEFT) && snake.direction.x != 1)
+        {
+            snake.direction = {-1, 0};
+        }
+        if (IsKeyPressed(KEY_RIGHT) && snake.direction.x != -1)
+        {
+            snake.direction = {1, 0};
         }
 
         BeginDrawing();
