@@ -1,6 +1,7 @@
 #include <ctime>
 #include <deque>
 #include <raylib.h>
+#include <raymath.h>
 
 Color green{173, 204, 96, 255};
 Color darkGreen{43, 51, 24, 255};
@@ -8,11 +9,25 @@ Color darkGreen{43, 51, 24, 255};
 int cellSize = 30;
 int cellCount = 25;
 
+double lastUpdateTime = 0;
+
+bool EventTriggered(const double interval)
+{
+    const double currentTime = GetTime();
+    if (currentTime - lastUpdateTime >= interval)
+    {
+        lastUpdateTime = currentTime;
+        return true;
+    }
+    return false;
+}
+
 class Snake
 {
 public:
 
     std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
+    Vector2 direction = {1,0};
 
     void Draw() const
     {
@@ -21,6 +36,12 @@ public:
             const auto segment = Rectangle{x * cellSize, y * cellSize, cellSize, cellSize};
             DrawRectangleRounded(segment, 0.5, 6, darkGreen);
         }
+    }
+
+    void Update()
+    {
+        body.pop_back();
+        body.push_front(Vector2Add(body[0], direction));
     }
 };
 
@@ -70,6 +91,11 @@ int main()
 
     while (!WindowShouldClose())
     {
+        if(EventTriggered(0.2))
+        {
+            snake.Update();
+        }
+
         BeginDrawing();
         ClearBackground(green);
 
