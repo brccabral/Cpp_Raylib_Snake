@@ -1,4 +1,5 @@
 build/
+resources/
 
 .idea/
 .vscode/
