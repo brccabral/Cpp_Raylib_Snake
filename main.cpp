@@ -8,6 +8,7 @@ Color darkGreen{43, 51, 24, 255};
 
 int cellSize = 30;
 int cellCount = 25;
+int offset = 75;
 
 double lastUpdateTime = 0;
 
@@ -52,7 +53,7 @@ public:
         for (const auto [x, y]: body)
         {
             const auto cs = static_cast<float>(cellSize);
-            const auto segment = Rectangle{x * cs, y * cs, cs, cs};
+            const auto segment = Rectangle{x * cs + offset, y * cs + offset, cs, cs};
             DrawRectangleRounded(segment, 0.5, 6, darkGreen);
         }
     }
@@ -97,7 +98,7 @@ public:
 
     void Draw() const
     {
-        DrawTexture(texture, position.x * cellSize, position.y * cellSize, WHITE);
+        DrawTexture(texture, position.x * cellSize + offset, position.y * cellSize + offset, WHITE);
     }
 
     static Vector2 GenerateRandomPos(const std::deque<Vector2> &snakeBody)
@@ -139,7 +140,7 @@ public:
             snake.Update();
             CheckCollisionWithFood();
             CheckCollisionWithEdges();
-            if(CheckCollisionWithTail())
+            if (CheckCollisionWithTail())
             {
                 GameOver();
             }
@@ -210,7 +211,7 @@ public:
 
 int main()
 {
-    InitWindow(750, 750, "Snake");
+    InitWindow(cellSize * cellCount + 2 * offset, cellSize * cellCount + 2 * offset, "Snake");
     SetTargetFPS(60);
     SetRandomSeed(time(nullptr));
 
@@ -227,6 +228,8 @@ int main()
 
         BeginDrawing();
         ClearBackground(green);
+        DrawRectangleLinesEx(
+                Rectangle{offset - 5, offset - 5, cellSize * cellCount + 10, cellSize * cellCount + 10}, 5, darkGreen);
 
         game.Draw();
 
