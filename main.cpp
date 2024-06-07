@@ -38,9 +38,14 @@ class Snake
 {
 public:
 
-    std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
-    Vector2 direction = {1, 0};
-    bool addSegment = false;
+    Snake()
+    {
+        Reset();
+    }
+
+    std::deque<Vector2> body{};
+    Vector2 direction{};
+    bool addSegment{};
 
     void Draw() const
     {
@@ -63,6 +68,12 @@ public:
             body.pop_back();
         }
         body.push_front(Vector2Add(body[0], direction));
+    }
+    void Reset()
+    {
+        body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
+        direction = {1, 0};
+        addSegment = false;
     }
 };
 
@@ -113,6 +124,7 @@ public:
 
     Snake snake{};
     Food food = Food(snake.body);
+    bool running = true;
 
     void Draw() const
     {
@@ -122,8 +134,12 @@ public:
 
     void Update()
     {
-        snake.Update();
-        CheckCollisionWithFood();
+        if(running)
+        {
+            snake.Update();
+            CheckCollisionWithFood();
+            CheckCollisionWithEdges();
+        }
     }
 
     void HandleInput()
@@ -131,19 +147,24 @@ public:
         if (IsKeyPressed(KEY_UP) && snake.direction.y != 1)
         {
             snake.direction = {0, -1};
+            running = true;
         }
         if (IsKeyPressed(KEY_DOWN) && snake.direction.y != -1)
         {
             snake.direction = {0, 1};
+            running = true;
         }
         if (IsKeyPressed(KEY_LEFT) && snake.direction.x != 1)
         {
             snake.direction = {-1, 0};
+            running = true;
         }
         if (IsKeyPressed(KEY_RIGHT) && snake.direction.x != -1)
         {
             snake.direction = {1, 0};
+            running = true;
         }
+
     }
 
     void CheckCollisionWithFood()
@@ -153,6 +174,26 @@ public:
             food.position = Food::GenerateRandomPos(snake.body);
             snake.addSegment = true;
         }
+    }
+
+    void CheckCollisionWithEdges()
+    {
+        const auto [x, y] = snake.body[0];
+        if (x == cellCount || x == -1)
+        {
+            GameOver();
+        }
+        if (y == cellCount || y == -1)
+        {
+            GameOver();
+        }
+    }
+
+    void GameOver()
+    {
+        snake.Reset();
+        food.position = Food::GenerateRandomPos(snake.body);
+        running = false;
     }
 };
 
