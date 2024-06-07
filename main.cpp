@@ -134,11 +134,15 @@ public:
 
     void Update()
     {
-        if(running)
+        if (running)
         {
             snake.Update();
             CheckCollisionWithFood();
             CheckCollisionWithEdges();
+            if(CheckCollisionWithTail())
+            {
+                GameOver();
+            }
         }
     }
 
@@ -164,7 +168,6 @@ public:
             snake.direction = {1, 0};
             running = true;
         }
-
     }
 
     void CheckCollisionWithFood()
@@ -187,6 +190,14 @@ public:
         {
             GameOver();
         }
+    }
+
+    [[nodiscard]] bool CheckCollisionWithTail() const
+    {
+        std::deque<Vector2> headless = snake.body;
+        headless.pop_front();
+
+        return ElementInDeque(snake.body[0], headless);
     }
 
     void GameOver()
