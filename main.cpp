@@ -126,6 +126,7 @@ public:
     Snake snake{};
     Food food = Food(snake.body);
     bool running = true;
+    int score = 0;
 
     void Draw() const
     {
@@ -177,6 +178,7 @@ public:
         {
             food.position = Food::GenerateRandomPos(snake.body);
             snake.addSegment = true;
+            ++score;
         }
     }
 
@@ -206,6 +208,7 @@ public:
         snake.Reset();
         food.position = Food::GenerateRandomPos(snake.body);
         running = false;
+        score = 0;
     }
 };
 
@@ -230,6 +233,8 @@ int main()
         ClearBackground(green);
         DrawRectangleLinesEx(
                 Rectangle{offset - 5, offset - 5, cellSize * cellCount + 10, cellSize * cellCount + 10}, 5, darkGreen);
+        DrawText("Snake", offset - 5, 20, 40, darkGreen);
+        DrawText(TextFormat("%i", game.score), offset - 5, offset + cellSize * cellCount + 10, 40, darkGreen);
 
         game.Draw();
 
