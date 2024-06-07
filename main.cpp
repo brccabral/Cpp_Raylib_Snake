@@ -22,6 +22,18 @@ bool EventTriggered(const double interval)
     return false;
 }
 
+bool ElementInDeque(const Vector2 element, const std::deque<Vector2> &deque)
+{
+    for (const Vector2 segment: deque)
+    {
+        if (Vector2Equals(segment, element))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 class Snake
 {
 public:
@@ -50,12 +62,12 @@ class Food
 {
 public:
 
-    Food()
+    explicit Food(const std::deque<Vector2> &snakeBody)
     {
         const Image image = LoadImage("resources/Graphics/food.png");
         texture = LoadTextureFromImage(image);
         UnloadImage(image);
-        position = GenerateRandomPos();
+        position = GenerateRandomPos(snakeBody);
     }
     ~Food()
     {
@@ -69,11 +81,17 @@ public:
         DrawTexture(texture, position.x * cellSize, position.y * cellSize, WHITE);
     }
 
-    static Vector2 GenerateRandomPos()
+    static Vector2 GenerateRandomPos(const std::deque<Vector2> &snakeBody)
     {
-        const float x = GetRandomValue(0, cellCount - 1);
-        const float y = GetRandomValue(0, cellCount - 1);
-        return Vector2{x, y};
+        Vector2 newPos = {};
+        do
+        {
+            const float x = GetRandomValue(0, cellCount - 1);
+            const float y = GetRandomValue(0, cellCount - 1);
+            newPos = {x, y};
+        }
+        while (ElementInDeque(newPos, snakeBody));
+        return newPos;
     }
 
 private:
@@ -86,7 +104,7 @@ class Game
 public:
 
     Snake snake{};
-    Food food{};
+    Food food = Food(snake.body);
 
     void Draw() const
     {
@@ -97,6 +115,7 @@ public:
     void Update()
     {
         snake.Update();
+        CheckCollisionWithFood();
     }
 
     void HandleInput()
@@ -116,6 +135,14 @@ public:
         if (IsKeyPressed(KEY_RIGHT) && snake.direction.x != -1)
         {
             snake.direction = {1, 0};
+        }
+    }
+
+    void CheckCollisionWithFood()
+    {
+        if (Vector2Equals(snake.body[0], food.position))
+        {
+            food.position = Food::GenerateRandomPos(snake.body);
         }
     }
 };
