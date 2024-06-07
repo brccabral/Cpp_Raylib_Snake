@@ -123,10 +123,25 @@ class Game
 {
 public:
 
+    Game()
+    {
+        InitAudioDevice();
+        eatSound = LoadSound("resources/Sounds/eat.mp3");
+        wallSound = LoadSound("resources/Sounds/wall.mp3");
+    }
+    ~Game()
+    {
+        UnloadSound(eatSound);
+        UnloadSound(wallSound);
+        CloseAudioDevice();
+    }
+
     Snake snake{};
     Food food = Food(snake.body);
     bool running = true;
     int score = 0;
+    Sound eatSound{};
+    Sound wallSound{};
 
     void Draw() const
     {
@@ -179,6 +194,7 @@ public:
             food.position = Food::GenerateRandomPos(snake.body);
             snake.addSegment = true;
             ++score;
+            PlaySound(eatSound);
         }
     }
 
@@ -209,6 +225,7 @@ public:
         food.position = Food::GenerateRandomPos(snake.body);
         running = false;
         score = 0;
+        PlaySound(wallSound);
     }
 };
 
