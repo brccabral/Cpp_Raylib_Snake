@@ -103,7 +103,7 @@ public:
 
     static Vector2 GenerateRandomPos(const std::deque<Vector2> &snakeBody)
     {
-        Vector2 newPos = {};
+        Vector2 newPos;
         do
         {
             const float x = GetRandomValue(0, cellCount - 1);
@@ -249,7 +249,10 @@ int main()
         BeginDrawing();
         ClearBackground(green);
         DrawRectangleLinesEx(
-                Rectangle{offset - 5, offset - 5, cellSize * cellCount + 10, cellSize * cellCount + 10}, 5, darkGreen);
+                Rectangle{
+                        (float) offset - 5.0f, (float) offset - 5.0f, (float) (cellSize * cellCount + 10),
+                        (float) (cellSize * cellCount + 10)},
+                5, darkGreen);
         DrawText("Snake", offset - 5, 20, 40, darkGreen);
         DrawText(TextFormat("%i", game.score), offset - 5, offset + cellSize * cellCount + 10, 40, darkGreen);
 
