@@ -1,5 +1,6 @@
 build/
 build_dir/
+build_win/
 resources/
 
 .idea/

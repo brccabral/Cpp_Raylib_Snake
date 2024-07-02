@@ -12,8 +12,8 @@ install(TARGETS ${PROJECT_NAME})
 if (WIN32)
     target_include_directories(${PROJECT_NAME} PRIVATE ${RAYLIB_PATH}/include)
     target_link_directories(${PROJECT_NAME} PRIVATE ${RAYLIB_PATH}/lib)
-    target_link_libraries(${PROJECT_NAME} gdi32 msvcrt winmm)
-    set(COMPILE_FLAGS "/NODEFAULTLIB:libcmt")
+    target_link_libraries(${PROJECT_NAME} gdi32 msvcrtd winmm)
+    set(COMPILE_FLAGS "/NODEFAULTLIB:libcmt /NODEFAULTLIB:msvcrt")
 endif ()
 
 # copy resources to Build folder for debugging
