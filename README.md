@@ -7,3 +7,5 @@ resources/Graphics/food.png
 resources/Sounds/eat.mp3
 resources/Sounds/wall.mp3
 ```
+
+On Windows, make sure `C:\path\to\raylib` is in your `%PATH%`  
